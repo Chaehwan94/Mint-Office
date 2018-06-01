@@ -11,11 +11,29 @@ import java.util.List;
 
 import sql.MyConnection;
 import vo.Commute;
+import vo.CommuteD;
+import vo.CommuteDBean;
 import vo.CommuteM;
+import vo.OutWorkD;
 
-public class CommuteDAOOracle implements CommuteDAO {
-
-	@Override
+public class CommuteDAOOracle implements Dao {
+	private static  volatile CommuteDAOOracle commuteDAOOracle;
+		
+	private CommuteDAOOracle(){
+	}
+	
+	public static CommuteDAOOracle getInstance(){
+		if(commuteDAOOracle==null){
+			synchronized (CommuteDAOOracle.class){
+				if(commuteDAOOracle==null){
+					commuteDAOOracle=new CommuteDAOOracle();
+				}
+			}
+		}
+		return commuteDAOOracle;
+	}
+	
+	//@Override
 	public String isWork(String emp_no) throws Exception {
 		/*2)DB와 연결 */
 		Connection con = null;
@@ -47,7 +65,7 @@ public class CommuteDAOOracle implements CommuteDAO {
 		}
 	}
 
-	@Override
+	//@Override
 	public void arrive(String emp_no) throws Exception {
 		/*2)DB와 연결 */
 		Connection con = null;
@@ -78,7 +96,7 @@ public class CommuteDAOOracle implements CommuteDAO {
 		}
 	}
 
-	@Override
+	//@Override
 	public void gohome(String com_no) throws Exception {
 		/*2)DB와 연결 */
 		Connection con = null;
@@ -106,7 +124,7 @@ public class CommuteDAOOracle implements CommuteDAO {
 		}
 	}
 
-	@Override
+	//@Override
 	public String isOut(String emp_no) throws Exception {
 		/*2)DB와 연결 */
 		Connection con = null;
@@ -138,7 +156,7 @@ public class CommuteDAOOracle implements CommuteDAO {
 		}
 	}
 	
-	@Override
+	//@Override
 	public void goout(String emp_no) throws Exception {
 		/*2)DB와 연결 */
 		Connection con = null;
@@ -164,7 +182,7 @@ public class CommuteDAOOracle implements CommuteDAO {
 		}
 	}
 
-	@Override
+	//@Override
 	public void comeback(String out_no) throws Exception {
 		/*2)DB와 연결 */
 		Connection con = null;
@@ -192,7 +210,7 @@ public class CommuteDAOOracle implements CommuteDAO {
 		}
 	}
 
-	@Override
+	//@Override
 	public void illness(String com_no) throws Exception {
 		/*2)DB와 연결 */
 		Connection con = null;
@@ -220,7 +238,8 @@ public class CommuteDAOOracle implements CommuteDAO {
 			MyConnection.close(pstmt, con);
 		}
 	}
-	@Override
+	
+	//@Override
 	public List<Commute> showCommute(String emp_no) throws Exception {
 		List<Commute> list = new ArrayList<>();
 		Connection con = null;
@@ -228,7 +247,7 @@ public class CommuteDAOOracle implements CommuteDAO {
 		ResultSet rs = null;
 		try {
 			con = sql.MyConnection.getConnection();
-			String showcSQL ="SELECT  com_no,emp_no,com_start,com_end,com_late,com_sick,TO_CHAR(com_start,'HH24:MI:SS') com_sTime, TO_CHAR(com_end,'HH24:MI:SS') com_eTime,(TO_CHAR(com_start,'YYMMDD')||'1759') com_isET,(TO_CHAR(SYSDATE,'YYMMDDHH24MI')) com_endD\r\n" + 
+			String showcSQL ="SELECT  com_no,emp_no,com_start,com_end,com_late,com_sick,TO_CHAR(com_start,'HH24:MI:SS') com_sTime, TO_CHAR(com_end,'HH24:MI:SS') com_eTime,(TO_CHAR(com_start,'YYMMDD')||'1759') com_isET,(TO_CHAR(com_end,'YYMMDDHH24MI')) com_endD\r\n" + 
 							"FROM    COMMUTE \r\n" + 
 							"WHERE   emp_no=?";
 			pstmt = con.prepareStatement(showcSQL);
@@ -261,7 +280,7 @@ public class CommuteDAOOracle implements CommuteDAO {
 		return list;
 	}
 	
-	@Override
+	//@Override
 	public List<CommuteM> showCommuteM(String emp_no,String year) throws Exception {
 		List<CommuteM> list = new ArrayList<>();
 		Connection con = null;
@@ -280,10 +299,11 @@ public class CommuteDAOOracle implements CommuteDAO {
 		
 		try {
 			con = sql.MyConnection.getConnection();
-			String showcmSQL ="SELECT  to_char(com_start,'MM') month, com_late,com_sick,(com_end-com_start)*24 overWork,TO_CHAR(com_end,'HH24:MI:SS') com_eTime,(TO_CHAR(com_start,'YYMMDD')||'1759') com_isET,(TO_CHAR(com_end,'YYMMDDHH24MI')) com_endD\r\n" + 
+			String showcmSQL ="SELECT  to_char(com_start,'MM') month, com_late,com_sick,(com_end-com_start)*24-9 overWork,TO_CHAR(com_end,'HH24:MI:SS') com_eTime,(TO_CHAR(com_start,'YYMMDD')||'1759') com_isET,(TO_CHAR(com_end,'YYMMDDHH24MI')) com_endD\r\n" + 
 								"FROM    COMMUTE \r\n" + 
 								"WHERE   com_start>=?||'01-01' AND com_start<?||'-12-31'\r\n" + 
-								"AND     emp_no=?";
+								"AND     emp_no=?"+
+								"ORDER BY month";
 			pstmt = con.prepareStatement(showcmSQL);
 			pstmt.setString(1, year);
 			pstmt.setString(2, year);
@@ -311,18 +331,21 @@ public class CommuteDAOOracle implements CommuteDAO {
 				}
 				workDay++;
 				
-				if(!rs.getString("com_late").equals("0")) {
+				if(rs.getString("com_late").equals("0")) {
 					goodDay++;
 				}else {
 					lateDay++;
 				}
-				if(!rs.getString("com_sick").equals("1")) {
+				if(!rs.getString("com_sick").equals("0")) {
 					sickDay++;
 				}
 				if(Integer.parseInt(rs.getString("com_isET"))>Integer.parseInt(rs.getString("com_endD"))) {
 					earlyDay++;
 				}
-				overWork+=(int)Double.parseDouble((rs.getString("overWork")));
+				int ow=(int)Double.parseDouble((rs.getString("overWork")));
+				if(ow>0) {
+					overWork+=ow;
+				}
 			}
 			cm.setWorkDay(workDay);
 			cm.setGoodDay(goodDay);
@@ -335,6 +358,177 @@ public class CommuteDAOOracle implements CommuteDAO {
 			MyConnection.close(rs, pstmt, con);
 		}
 		return list;
+	}
+
+	//@Override
+	public int getDayCCount(String ldDate, String rdDate, String emp_no) throws Exception {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String selectCountSQL = 
+				"SELECT COUNT(*) totalcnt\r\n" + 
+				"FROM    commute\r\n" + 
+				"WHERE   com_start>=to_date(?,'YYYY-MM-DD')\r\n" + 
+				"AND     com_end<=to_date(?||'235959','YYYY-MM-DDHH24MISS')\r\n" + 
+				"AND     emp_no=?";
+		try {
+			con = sql.MyConnection.getConnection();
+			pstmt = con.prepareStatement(selectCountSQL);
+			pstmt.setString(1, ldDate);
+			pstmt.setString(2, rdDate);
+			pstmt.setString(3, emp_no);
+			rs = pstmt.executeQuery();
+			rs.next();
+			int totalCount = rs.getInt("totalcnt");
+			return totalCount;
+		}finally {
+			MyConnection.close(rs, pstmt, con);
+		}
+	}
+
+	//@Override
+	public List<CommuteDBean> findAll(String ldDate, String rdDate, String emp_no, int intPage) throws Exception {
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+
+		String selectAllSQL=
+				"SELECT  b.*\r\n" + 
+				"FROM (SELECT ROWNUM r, a.*\r\n" + 
+				"        FROM (SELECT to_number(c.com_no,'9999') no, c.emp_no, to_char(c.com_start,'HH24:MI:SS') com_start, to_char(c.com_end,'HH24:MI:SS') com_end, c.com_late,c.com_sick,(com_end-com_start)*24-9 overwork,(TO_CHAR(com_start,'YYMMDD')||'1759') com_isET,(TO_CHAR(com_end,'YYMMDDHH24MI')) com_endD,to_char(c.com_start,'YYYYMMDD') dStart,to_char(c.com_start,'YYYYMMDD') dEnd, to_char(c.com_start,'YYYY-MM-DD') compare\r\n" + 
+				"               FROM Commute c\r\n" + 
+				"               WHERE  c.emp_no=?\r\n" + 
+				"               AND    com_start>=to_date(?,'YYYY-MM-DD')\r\n" + 
+				"               AND    com_end<=to_date(?||'235959','YYYY-MM-DDHH24MISS')\r\n" + 
+				"               ORDER BY c.com_start desc) a\r\n" + 
+				"               ) b\r\n" + 
+				"WHERE r BETWEEN  ? AND ?";
+		
+		List<CommuteD> list = new ArrayList<>();
+		try {
+			con = sql.MyConnection.getConnection();
+			pstmt = con.prepareStatement(selectAllSQL);
+			int cntPerPage=20;//1페이지별 3건씩 보여준다
+			int endRow=cntPerPage * intPage;
+			int startRow=endRow-cntPerPage+1; 			
+			pstmt.setString(1, emp_no);
+			pstmt.setString(2, ldDate);
+			pstmt.setString(3, rdDate);
+			pstmt.setInt(4, startRow);
+			pstmt.setInt(5, endRow);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				Double ow=Double.parseDouble(rs.getString("overwork"));
+				String owt="";
+				if(ow>0)
+					owt=ow+"";
+				else
+					owt="0";
+				int isET=Integer.parseInt(rs.getString("com_isET"));
+				int endD=Integer.parseInt(rs.getString("com_endD"));
+				String com_early="";
+				if(isET<endD) {
+					com_early="0";
+				}else {
+					com_early="1";
+				}
+				list.add(new CommuteD(
+						rs.getString("no"),
+						rs.getString("emp_no"),
+						rs.getString("com_start"),
+						rs.getString("com_end"),
+						rs.getString("com_late"),
+						rs.getString("com_sick"),
+						com_early,
+						owt,
+						rs.getString("dStart"),
+						rs.getString("dEnd"),
+						rs.getString("compare")
+						));
+			}
+			pstmt.close();
+			rs.close();
+			
+			selectAllSQL=
+					"SELECT  b.*\r\n" + 
+					"FROM (SELECT ROWNUM r, a.*\r\n" + 
+					"        FROM (SELECT to_number(c.com_no,'9999') no, c.emp_no, c.com_start, c.com_end, c.com_late,c.com_sick,o.out_no,o.OUT_START, o.out_end, to_char(o.out_start,'HH24:MI:SS') odStart,to_char(o.out_end,'HH24:MI:SS') odEnd,to_char(o.out_start,'YYYY-MM-DD') compare\r\n" + 
+					"               FROM Commute c, Outwork o\r\n" + 
+					"               WHERE  c.emp_no=o.emp_no\r\n" + 
+					"               AND    c.emp_no=?\r\n" + 
+					"               AND    com_start>=to_date(?,'YYYY-MM-DD')\r\n" + 
+					"               AND    com_end<=to_date(?||'235959','YYYY-MM-DDHH24MISS')\r\n" + 
+					"               AND    to_char(c.COM_START,'YYYYMMDD')=to_char(o.out_start,'YYYYMMDD')\r\n" + 
+					"               ORDER BY c.com_start desc) a\r\n" + 
+					"               ) b\r\n" + 
+					"WHERE r BETWEEN  ? AND ?";
+			List<OutWorkD> olist= new ArrayList<>();
+			pstmt = con.prepareStatement(selectAllSQL);
+			cntPerPage=50;//1페이지별 3건씩 보여준다
+			endRow=cntPerPage * intPage;
+			startRow=endRow-cntPerPage+1; 			
+			pstmt.setString(1, emp_no);
+			pstmt.setString(2, ldDate);
+			pstmt.setString(3, rdDate);
+			pstmt.setInt(4, startRow);
+			pstmt.setInt(5, endRow);
+			rs = pstmt.executeQuery();		
+			while(rs.next()) {
+				olist.add(new OutWorkD(
+						rs.getString("out_no"),
+						rs.getString("emp_no"),
+						rs.getString("out_start"),
+						rs.getString("out_end"),
+						rs.getString("odStart"),
+						rs.getString("odEnd"),
+						rs.getString("compare")
+						));
+			}
+
+			List<CommuteDBean> beanlist = new ArrayList<>();
+			int x=0;
+			int y=0;
+			boolean find=false;
+			CommuteD cd=null;
+			OutWorkD od=null;
+			CommuteDBean cdb=null;
+			while(true) {
+				cd=null;
+				od=null;
+				if(x<list.size())
+					cd= list.get(x);
+				if(y<olist.size())
+					od= olist.get(y);
+				if(od==null){
+					cdb=new CommuteDBean(cd.getCompare(),cd.getCom_start(),cd.getCom_end(),cd.getCom_late(),cd.getCom_early(),cd.getCom_sick(),cd.getOverwork(),"-","-");
+					x++;
+					beanlist.add(cdb);
+				}else {
+					if(!cd.getCompare().equals(od.getCompare())){
+						cdb=new CommuteDBean(cd.getCompare(),cd.getCom_start(),cd.getCom_end(),cd.getCom_late(),cd.getCom_early(),cd.getCom_sick(),cd.getOverwork(),"-","-");
+						find=false;
+						x++;
+						beanlist.add(cdb);
+					}else {
+						if(!find) {
+							cdb=new CommuteDBean(cd.getCompare(),cd.getCom_start(),cd.getCom_end(),cd.getCom_late(),cd.getCom_early(),cd.getCom_sick(),cd.getOverwork(),od.getOdStart(),od.getOdEnd());
+							y++;
+							beanlist.add(cdb);
+							find=true;
+						}else {
+							cdb=new CommuteDBean("","","","","","","",od.getOdStart(),od.getOdEnd());
+							beanlist.add(cdb);
+							y++;
+						}
+					}
+				}
+				if(x==list.size()&&y==olist.size())
+					break;
+			}			
+			return beanlist;
+		}finally {
+			MyConnection.close(rs, pstmt, con);			
+		}
 	}
 
 }
