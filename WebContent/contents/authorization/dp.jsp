@@ -86,13 +86,6 @@ function fnGetEmp(sParam){
 			</div>
 			<button type="button" class="btn btn-info" style="margin: 10px;" id="searchBtn">검색</button>
 			<div class="list-group" style="margin: 10px; text-align: center;" id="searchResult">
-		<%-- 	<%
-				 String result = (String)request.getAttribute("result");
-				if(result != null){
-					%><%=result %>
-					<%
-					  return;
-				}  --%>
 				<%
 				List<Employee>list = (List)request.getAttribute("list");
 				%>

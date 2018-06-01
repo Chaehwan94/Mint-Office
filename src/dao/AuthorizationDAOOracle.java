@@ -186,8 +186,8 @@ public class AuthorizationDAOOracle implements AuthorizationDAO {
 						rs2.getString("STATUS")					
 					));
 				}
+				System.out.println("empList status: " + empList.get(i).getStatus());
 			}
-			System.out.println("empList : " + empList);
 			/*for(int i=0; i< noList.size(); i++ ) {
 				pstmt = con.prepareStatement(selectDpLineEmp);
 				System.out.println("name.get(i) : " + noList.get(i));
