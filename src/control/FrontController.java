@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import service.AuthorizationService;
 import service.CommuteService;
 import service.EmployeeService;
 import service.MemoService;
@@ -26,6 +27,7 @@ public class FrontController extends HttpServlet {
 	private ScheduleService scheduleService = new ScheduleService();
 	private MemoService memoService = new MemoService();
 	private CommuteService commuteService=new CommuteService();
+	private AuthorizationService authorService = new AuthorizationService();
 	private Properties env;
 
 	public FrontController() {
@@ -90,6 +92,9 @@ public class FrontController extends HttpServlet {
 						} else if ("service.CommuteService".equals(m.getParameterTypes()[0].getName())) {
 							m.invoke(obj, commuteService);
 							break;
+						}else if("service.AuthorizationService".equals(m.getParameterTypes()[0].getName())) {
+							m.invoke(obj, authorService);
+							break;
 						}
 					}
 				}
@@ -114,18 +119,26 @@ public class FrontController extends HttpServlet {
 								.equals(constructor.getParameters()[0].getType().getName())) {
 							System.out.println("CommuteService Catch");
 							obj = constructor.newInstance(commuteService);
+						}else if("service.AuthorizationService"
+								.equals(constructor.getParameters()[0].getType().getName())) {
+							System.out.println("AuthorizationService Catch");
+							obj = constructor.newInstance(authorService);
 						}
 						break;
 					}
 				}
 			}
-			System.out.println(clazz.toString());
+			System.out.println("FrontController 131 : " + clazz.toString());
 
 			// execute메서드 호출방법 2
 			Method m;
 			// m = clazz.getDeclaredMethod("execute",HttpServletRequest.class,
 			// HttpServletResponse.class);
+			if(obj==null)
+				System.out.println("objojb");
 			m = clazz.getDeclaredMethod("execute", HttpServletRequest.class, HttpServletResponse.class);
+			if(m==null)
+				System.out.println("mmm");
 			forwardURL = (String) m.invoke(obj, request, response);
 			// execute메서드 호출방법 3
 			/* forwardURL = ((Controller)obj).execute(request, response); */
@@ -145,7 +158,7 @@ public class FrontController extends HttpServlet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(forwardURL);
+		System.out.println("forwardURL : " + forwardURL);
 		if (forwardURL == null) {
 		} else if (forwardURL.contains("redirect:")) {
 			String redirectURL = forwardURL.substring("redirect:".length());
@@ -160,7 +173,8 @@ public class FrontController extends HttpServlet {
 				response.sendRedirect("home.jsp");
 			}else {
 			RequestDispatcher rd = request.getRequestDispatcher(forwardURL);
-			rd.forward(request, response);}
+			rd.forward(request, response);
+			}
 		}
 	}
 }

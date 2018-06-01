@@ -11,14 +11,13 @@ import javax.servlet.http.HttpSession;
 import control.Controller;
 import service.AuthorizationService;
 import vo.Employee;
-import vo.MydpLine;
 
-public class DpLineController implements Controller {
+public class SearchEmpController implements Controller {
 	private AuthorizationService service;
-
-	public DpLineController() {
+	public  SearchEmpController() {
 		super();
 	}
+
 	public AuthorizationService getService() {
 		return service;
 	}
@@ -30,28 +29,30 @@ public class DpLineController implements Controller {
 	@Override
 	public String execute(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		System.out.println("execute 진입");
 		HttpSession session = request.getSession();
 		String name = request.getParameter("name");
-		System.out.println("name : " + name);
+		System.out.println("search name :" + name);
 		if (name == null || name.equals("")) {
 			try {
 				System.out.println("selectAll try");
 				List<Employee>list =service.selectAll();
 				request.setAttribute("list", list);
 				System.out.println("selectAll try 끝");
-				System.out.println("mydpline select try");
-				String sessionNo = (String) session.getAttribute("emp_no");
-				List<MydpLine> mydplinelist = service.selectDpline(sessionNo);
-				request.setAttribute("mydplinelist", mydplinelist);
-				System.out.println("mydpline select end");
+				
 			} catch (Exception e) {
-				request.setAttribute("list", e.getMessage());
+				request.setAttribute("result", e.getMessage());
+			}
+		} else {
+			try {
+				List<Employee>list = service.searchEmp(name);
+				request.setAttribute("list", list);
+			} catch (Exception e) {
+				request.setAttribute("result", e.getMessage());
 			}
 		}
-		
-		
-		String forwardURL = "contents/authorization/dplineindex.jsp";
+		//String forwardURL = "contents/authorization/dp.jasp";
+		String forwardURL = "contents/authorization/dpResult.jsp";
 		return forwardURL;
-	};
+	}
+
 }

@@ -6,6 +6,7 @@ $(function() {
 		$('#dplinemodal').modal();
 		$(".modal-backdrop").remove();
 	});
+
 });
 </script>
 	<h2 style="margin: 20px;">결재 라인 목록</h2>

@@ -22,7 +22,6 @@ public class MyConnection {
 		try {
 			con=DriverManager.getConnection(url, user, password);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return con;

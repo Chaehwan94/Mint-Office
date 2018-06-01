@@ -16,12 +16,25 @@ public class Employee {
 	private int holiday_all;
 	private int holiday_use;
 	private int is_retire;
+	public Employee(String emp_no, String dep_no, String position_no) {
+		super();
+		this.emp_no = emp_no;
+		this.dep_no = dep_no;
+		this.position_no = position_no;
+	}
 	private int is_manager;
 	private String msg;
 	
 	public Employee() {
 		super();
 	}
+	
+	public Employee(String emp_no, String name) {
+		super();
+		this.emp_no = emp_no;
+		this.name = name;
+	}
+
 	public Employee(String emp_no, String id, String pwd, String name, String dep_no, String position_no,
 			String address, String email, String profile_pic, String signature, String join_date, String retire_date,
 			int is_retire,String msg, int is_manager,int holiday_all, int holiday_use) {
