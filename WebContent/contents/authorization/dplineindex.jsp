@@ -19,44 +19,12 @@ $(function() {
 		</tr>
 		<tr>
 			<td>1</td>
-			<td>OO 프로젝트 결재 라인<br>
-			[결재] 개발팀 임채환 사원<br>
-			[결재] 개발팀 이하영 대리<br>
-			[결재] 개발팀 한아연 팀장
+			<td>차세대 프로젝트 개발 라인<br>
+			[검토] IT 개발부서 YoungJin 사원<br>
+			[부재] IT 개발부서 Daeun 사원<br>
+			[결재] IT 개발부서 SeungMin 사원
 			</td>
 			<td style="vertical-align: middle;"><i class="fas fa-trash-alt" style="width: 20px; height: auto;"></i></td>
-		</tr>
-		<tr>
-			<td>2</td>
-			<td>★★ 발주 결재 라인</td>
-		</tr>
-		<tr>
-			<td>3</td>
-			<td>@@ 인사부 결재 라인</td>
-		</tr>
-		<tr>
-			<td>4</td>
-			<td>회식비 결재 라인</td>
-		</tr>
-		<tr>
-			<td>5</td>
-			<td>휴가계 결재 라인</td>
-		</tr>
-		<tr>
-			<td>6</td>
-			<td>$$ 구매 품의서 결재 라인</td>
-		</tr>
-		<tr>
-			<td>7</td>
-			<td>## 프로젝트 결재 라인</td>
-		</tr>
-		<tr>
-			<td>8</td>
-			<td>## 프로젝트 결재 라인</td>
-		</tr>
-		<tr>
-			<td>9</td>
-			<td>## 프로젝트 결재 라인</td>
 		</tr>
 	</table>
 	<button type="button" class="btn btn-success" style="margin: 5px;" id="createdplinebtn">결재 라인 만들기</button>

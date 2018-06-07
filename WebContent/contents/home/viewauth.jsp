@@ -56,12 +56,6 @@
 			}
 		});
 
-		/*    	$("div.list-group a").click(function(){
-		 $("div.list-group a").css("background", "white").css("color","#55595c");
-		 $(this).css("background", "#6CDAB2").css("color","white");
-		
-		 }); */
-
 		$("div#approval_register").hover(
 				function() {
 					$("div#approval_detail").css("display", "block");

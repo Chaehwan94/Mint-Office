@@ -6,7 +6,7 @@
 
 <c:forEach items="${requestScope.mydplineEmp}" var="item" varStatus="status">
 	<a href="#" class="list-group-item list-group-item-action">
-	<select class="custom-select" style="width: 40%" id="selectbox">
+	<select class="custom-select" style="width: 30%" id="selectbox">
 	<option value="1">검토</option>
 	<option value="2">부재</option>
 	<option value="3">결재</option>
