@@ -36,7 +36,7 @@
 	<button type="submit" class="btn btn-primary" style="margin: 10px;">Submit</button>
 </blockquote>
 <br>
-<form>
+<form style="margin-bottom: 100px">
 	<table class="table table-hover">
 		<tr>
 			<td>작성 날짜</td>
@@ -111,19 +111,6 @@
 	</table>
 	<textarea name="summernote" id="summernote" rows="10" cols="100">내용을 작성해주세요.</textarea>
 </form>
-<!-- <script type="text/javascript">
-var oEditors = [];
-window.addEventListener("load", function(){
-  nhn.husky.EZCreator.createInIFrame({
-    oAppRef: oEditors,
-    elPlaceHolder: "ir1",
-    sSkinURI: "/se2/SmartEditor2Skin.html",
-    
-    fCreator: "createSEditor2"
-  });
-  
-});
-</script> -->
 
 <div class="modal" id="dplinemodal">
 	<div class="modal-dialog" role="document" style="max-width: 1000px;">
