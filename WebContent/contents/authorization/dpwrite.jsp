@@ -10,6 +10,20 @@
 			$('#referencemodal').modal();
 			$(".modal-backdrop").remove();
 		});
+		 $('#summernote').summernote({
+		      height: 700,          // 기본 높이값
+		      width : 1000,
+		      minHeight: null,      // 최소 높이값(null은 제한 없음)
+		      maxHeight: null,      // 최대 높이값(null은 제한 없음)
+		      //focus: true,          // 페이지가 열릴때 포커스를 지정함
+		      lang: 'ko-KR',       // 한국어 지정(기본값은 en-US)
+		      popover: {
+		          image: [],
+		          link: [],
+		          air: []
+		        }
+
+		    });
 	});
 </script>
 <style>
@@ -93,25 +107,23 @@
 			<td colspan="2" id="smarteditor">
 			</td>
 		</tr>
-
 		</tbody>
 	</table>
+	<textarea name="summernote" id="summernote" rows="10" cols="100">내용을 작성해주세요.</textarea>
 </form>
-
-<textarea name="ir1" id="ir1" rows="10" cols="100">내용을 작성해주세요.</textarea>
-<script type="text/javascript">
+<!-- <script type="text/javascript">
 var oEditors = [];
 window.addEventListener("load", function(){
   nhn.husky.EZCreator.createInIFrame({
     oAppRef: oEditors,
     elPlaceHolder: "ir1",
-    sSkinURI: "../se2/SmartEditor2Skin.html",
+    sSkinURI: "/se2/SmartEditor2Skin.html",
     
     fCreator: "createSEditor2"
   });
   
 });
-</script>
+</script> -->
 
 <div class="modal" id="dplinemodal">
 	<div class="modal-dialog" role="document" style="max-width: 1000px;">

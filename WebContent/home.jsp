@@ -27,6 +27,9 @@
 <script src='js/calendar/moment.min.js'></script>
 <script src='js/calendar/fullcalendar.min.js'></script>
 <script src='js/calendar/gcal.js'></script>
+<link href="summernote/summernote.css" rel="stylesheet">
+<script src="summernote/summernote.js"></script>
+<script src="summernote/lang/summernote-ko-KR.js"></script>
 <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBfIrqaBsk7v_DFG5BVrxbTuRcT3hvAhqo&callback=myMap"></script> -->
 </head>
 <body>
