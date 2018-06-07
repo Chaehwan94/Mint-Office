@@ -5,7 +5,7 @@ $(function(){
 	$('#btwrite').click(function(){
 		$.ajax({
 			method:'POST',
-			url: 'contents/authorization/dpwrite.jsp',
+			url: 'dpwrite.do',
 			success: function(data){
 				$('section').html(data);
 			}
